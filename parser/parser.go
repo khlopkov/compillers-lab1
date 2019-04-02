@@ -37,7 +37,7 @@ func (s *symbolStack) append(symbol Symbol) {
 	s.stack = append(s.stack, symbol)
 }
 
-func (s *symbolStack) fold(grammar *Grammar) bool {
+func (s *symbolStack) reduce(grammar *Grammar) bool {
 	current := s.pop()
 	base := make([]Symbol, 0, 8)
 	base = append(base, current)
@@ -81,8 +81,8 @@ func (p *parser) Parse(input string) bool {
 				return true
 			}
 
-			foldSuccessful := stack.fold(p.grammar)
-			if !foldSuccessful {
+			reduceSuccessful := stack.reduce(p.grammar)
+			if !reduceSuccessful {
 				return false
 			}
 			continue
@@ -101,8 +101,8 @@ func (p *parser) Parse(input string) bool {
 
 		relation := p.grammar.matrix.GetRelationOf(symbolFromStack, symbolFromInput)
 		if relation == Greater {
-			foldSuccessful := stack.fold(p.grammar)
-			if !foldSuccessful {
+			reduceSuccessful := stack.reduce(p.grammar)
+			if !reduceSuccessful {
 				return false
 			}
 		} else {

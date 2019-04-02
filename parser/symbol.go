@@ -5,6 +5,8 @@ type SymbolType byte
 const (
 	Terminal SymbolType = iota + 1
 	NonTerminal
+	StartSymbol
+	EndSymbol
 )
 
 type Symbol interface {

@@ -3,7 +3,8 @@ package parser
 type PrecedenceRelation byte
 
 const (
-	Less PrecedenceRelation = iota + 1
+	Empty PrecedenceRelation = iota
+	Less
 	Equal
 	Greater
 )
@@ -11,12 +12,20 @@ const (
 func getIndexIdentifier(s Symbol) string {
 	identifier := ""
 
-	if s.SymbolType() == NonTerminal {
+	switch s.SymbolType() {
+	case NonTerminal:
 		identifier += "non-terminal"
-	} else {
+		break
+	case Terminal:
 		identifier += "terminal"
+		break
+	case StartSymbol:
+		return "start-symbol"
+	case EndSymbol:
+		return "end-symbol"
+	default:
+		panic("unknown symbol type")
 	}
-
 	identifier += s.Identifier()
 
 	return identifier
@@ -53,6 +62,9 @@ func (m *precedenceMatrix) GetRelationOf(a, b Symbol) PrecedenceRelation {
 	aIdx := getIndexIdentifier(a)
 	bIdx := getIndexIdentifier(b)
 
+	if m.relations[aIdx] == nil {
+		return Empty
+	}
 	return m.relations[aIdx][bIdx]
 }
 
